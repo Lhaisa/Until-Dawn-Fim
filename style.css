@@ -219,7 +219,7 @@ nav a {
 }
 
 .card-back {
-  background: url("https://assets.codepen.io/13223981/back-card.png") center / cover no-repeat;
+  background: url('https://www.quadrorama.com.br/wp-content/uploads/2018/02/quadro-decorativo-poster-Until-Dawn-01.png') center / cover no-repeat;
 }
 
 .card-front {
@@ -230,7 +230,7 @@ nav a {
 }
 
 .card-front.Sam-Samantha-Giddings {
-  background-image: url("https://assets.codepen.io/13223981/dark-magician-fron.jpg");
+  background-image: url('Samantha.webp');
 }
 
 .card-front.Josh-Washington {
