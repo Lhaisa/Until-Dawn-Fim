@@ -1,0 +1,375 @@
+:root {
+  --card-width: 200px;
+  --card-height: 293px;
+  --card-border-radius: 15px;
+  --gold-color: #d4af37;
+  --purple-color: #6a0dad;
+  --purple-glow: rgba(121, 121, 121, 0.8);
+  --red-glow: rgba(173, 13, 13, 0.8);
+  --blue-glow: rgba(13, 73, 173, 0.8);
+  --white-glow: rgba(200, 200, 200, 0.8);
+}
+
+/* --- LOADING SCREEN --- */
+#loading-screen {
+  position: fixed;
+  inset: 0;
+  background: rgb(17, 17, 17);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+  overflow: visible;
+}
+
+.logo {
+  font-size: 40px;
+  font-weight: bold;
+  letter-spacing: 5px;
+  text-align: center;
+  color: white;
+  margin-bottom: 40px;
+  z-index: 1;
+}
+
+.logo img {
+  width: 120px;
+  margin-bottom: 15px;
+  filter: drop-shadow(0 0 10px red);
+  animation: spin 5s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+.loading-text {
+  font-size: 18px;
+  margin-top: 20px;
+  letter-spacing: 3px;
+  animation: pulse 1.5s infinite alternate;
+  z-index: 2;
+}
+
+@keyframes pulse {
+  from { opacity: 0.3; }
+  to { opacity: 1; }
+}
+
+.particle {
+  position: absolute;
+  background: rgba(255, 0, 0, 0.7);
+  border-radius: 50%;
+  animation: floatUp linear infinite forwards;
+  z-index: 3;
+}
+
+@keyframes floatUp {
+  from {
+    transform: translateY(100vh) scale(0.3);
+    opacity: 0.6;
+  }
+  to {
+    transform: translateY(-50vh) scale(1);
+    opacity: 0;
+  }
+}
+
+/* --- BODY & BACKGROUND --- */
+body {
+  margin: 0;
+  font-family: Arial, Helvetica, sans-serif;
+  color: var(--white-glow);
+  background: url(https://64.media.tumblr.com/05e78cfc2662bc8fc377b969c3816910/tumblr_ntz8zl23ra1uea6rso1_250.gif) no-repeat center center / cover;
+  image-rendering: optimizeSpeed;
+  min-height: 100vh;
+  overflow-x: hidden;
+  position: relative;
+}
+
+body::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-image:
+    radial-gradient(circle at 10% 20%, rgba(255,255,255,0.05) 1px, transparent 1px),
+    radial-gradient(circle at 30% 50%, rgba(255,255,255,0.05) 1px, transparent 1px),
+    radial-gradient(circle at 60% 30%, rgba(255,255,255,0.05) 1px, transparent 1px),
+    radial-gradient(circle at 80% 70%, rgba(255,255,255,0.05) 1px, transparent 1px);
+  background-size: 300px 300px;
+  z-index: -2;
+}
+
+body::after {
+  content: "";
+  position: absolute;
+  bottom: 30px;
+  right: 30px;
+  width: 100px;
+  height: 100px;
+  background: url("https://upload.wikimedia.org/wikipedia/commons/8/8a/PlayStation_logo_%28colored%29.svg") no-repeat center / contain;
+  opacity: 0.6;
+  z-index: -1;
+}
+
+/* --- CONTEÚDO PRINCIPAL --- */
+#content {
+  display: none;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  width: 100%;
+  margin-top: 40px;
+}
+
+nav ul {
+  list-style: none;
+  padding: 0;
+}
+
+nav a {
+  color: red;
+  text-decoration: none;
+  font-weight: bold;
+}
+
+/* --- CARDS & CAROUSEL --- */
+.carousel-container {
+  display: none;
+  justify-content: center;
+  align-items: center;
+  margin: 60px auto;
+  flex-wrap: wrap;
+  max-width: 800px;
+  width: 100%;
+}
+
+.cards-container {
+  position: relative;
+  width: var(--card-width);
+  height: var(--card-height);
+}
+
+.nav-button {
+  background: rgba(255, 255, 255, 0.1);
+  border: none;
+  color: white;
+  font-size: 24px;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  cursor: pointer;
+  transition: background 0.3s ease;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+}
+
+.nav-button:hover {
+  background: rgba(255, 255, 255, 0.3);
+}
+
+.card-container {
+  width: var(--card-width);
+  height: var(--card-height);
+  position: absolute;
+  cursor: pointer;
+  filter: drop-shadow(0 0 15px rgba(255, 255, 255, 0.2));
+  opacity: 0;
+  pointer-events: none;
+}
+
+.card-container.active {
+  opacity: 1;
+  pointer-events: all;
+}
+
+.card-container.flipped .card-inner {
+  transform: rotateY(180deg);
+}
+
+.card-container.activated {
+  animation: floatCard 2s infinite ease-in-out;
+}
+
+@keyframes floatCard {
+  0% { transform: translateY(0); }
+  50% { transform: translateY(-10px); }
+  100% { transform: translateY(0); }
+}
+
+.card-inner {
+  width: 100%;
+  height: 100%;
+  transition: transform 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  transform-style: preserve-3d;
+  position: relative;
+}
+
+.card-face {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  backface-visibility: hidden;
+  border-radius: var(--card-border-radius);
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+  overflow: hidden;
+}
+
+.card-back {
+  background: url('https://www.quadrorama.com.br/wp-content/uploads/2018/02/quadro-decorativo-poster-Until-Dawn-01.png') center / cover no-repeat;
+}
+
+.card-front {
+  transform: rotateY(180deg);
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+}
+
+.card-front.Sam-Samantha-Giddings {
+  background-image: url('Samantha.webp');
+}
+
+.card-front.Josh-Washington {
+  background-image: url('https://pm1.narvii.com/6659/4edd96316186dcf6302da3098769e416d5119247_hq.jpg');
+}
+
+.card-front.Chris-Hartley {
+  background-image: url('https://ella.janitorai.com/bot-avatars/G3Vrk97DvJ3TY3i0G7VAn.webp?width=1200');
+}
+
+
+.card-front.Ashley-Brown {
+  background-image: url('https://static0.srcdn.com/wordpress/wp-content/uploads/2021/11/Ashley-Until-Dawn1.jpg?q=50&fit=crop&w=825&dpr=1.5');
+}
+
+.card-front.Emily-Davis {
+  background-image: url('https://assets.mycast.io/actor_images/actor-emily-until-dawn-721315_large.jpg?1680117225');
+}
+
+.card-front.Matthew-Taylor{
+  background-image: url('Mathew\ Taylor.jpg');
+}
+
+.card-front.jessica-Riley{
+  background-image: url('https://p2.trrsf.com.br/image/fget/cf/540/960/smart/images.terra.com/2024/02/02/card-6-until-dawn-u85on6yg3ebd.jpg');
+}
+
+.card-front.Michael-Munroe{
+  background-image: url('Mike.jpg');
+}
+
+.card-front.Hannah-Washington{
+  background-image: url('Hannah\ Washington.jpg');
+}
+
+.card-front.Beth-Washington{
+  background-image: url('https://static0.srcdn.com/wordpress/wp-content/uploads/2021/11/Ashley-Until-Dawn1.jpg?q=50&fit=crop&w=825&dpr=1.5');
+}
+
+/* --- TEXTO PS1 --- */
+.ps1-text,
+.card-info {
+  text-align: center;
+  font-size: 14px;
+  margin-top: 20px;
+  color: var(--white-glow);
+}
+
+/* --- RESPONSIVO --- */
+@media (max-width: 600px) {
+  .carousel-container {
+    flex-direction: column;
+  }
+
+  .nav-button {
+    margin: 10px;
+  }
+}
+
+
+/* === PÁGINAS SECUNDÁRIAS === */
+body.index-page {
+  background-image: url('./Brabuletaazul.gif');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  image-rendering: optimizeSpeed;
+  min-height: 100vh;
+  color: var(--white-glow);
+}
+
+#historia {
+  padding: 40px 20px;
+  max-width: 800px;
+  margin: 0 auto;
+  text-align: left;
+}
+
+#historia h1,
+#historia h2,
+#historia h3,
+#historia h4,
+#historia p {
+  color: white;
+  line-height: 1.6;
+}
+
+.card {
+  background: rgba(0, 0, 0, 0.6);
+  padding: 20px;
+  margin: 20px 0;
+  border-radius: 10px;
+  box-shadow: 0 0 10px rgba(255, 255, 255, 0.1);
+}
+
+.logo-link {
+  display: inline-block;
+  margin: 20px;
+  color: var(--gold-color);
+  font-weight: bold;
+  text-decoration: none;
+}
+
+/* === PÁGINA SECUNDÁRIA: PERSONAGENS === */
+body.personagens-page {
+  background-image: url('./Brabuletaazul.gif'); /* ou outra imagem de borboleta */
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  image-rendering:optimizeQuality;
+  min-height: 100vh;
+  color: var(--white-glow);
+}
+
+#personagens {
+  padding: 40px 20px;
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+#personagens h1,
+#personagens h2,
+#personagens p {
+  color: white;
+  line-height: 1.6;
+}
+
+.card {
+  background: rgba(0, 0, 0, 0.6);
+  padding: 20px;
+  margin: 20px 0;
+  border-radius: 10px;
+  box-shadow: 0 0 10px rgba(255, 255, 255, 0.1);
+}
+
+.logo-link {
+  display: inline-block;
+  margin: 20px;
+  color: var(--gold-color);
+  font-weight: bold;
+  text-decoration: none;
+}
